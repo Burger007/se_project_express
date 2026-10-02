@@ -13,7 +13,7 @@ const getUsers = (req, res) => {
       console.error(err);
       return res
         .status(INTERNAL_SERVER_ERROR)
-        .send({ Message: "An error on the server occured" });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -25,24 +25,32 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({ Message: "Invalid data" });
+        return res.status(BAD_REQUEST).send({ message: "Invalid data" });
       }
       return res
         .status(500)
-        .send({ Message: "An error in the server occured" });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
 const getUser = (req, res) => {
   const { userId } = req.params;
-  User.findById(userId).then((user) => res.status(200).send(user);
-  if (err.name === "CastError") {
-    return res.status(NOT_FOUND).send({ message: "Invalid user ID" });
-  }
-  return res
-  .status(INTERNAL_SERVER_ERROR)
-  .send({message:"An error has occured on the server"});
-});
 
+  User.findById(userId)
+    .orFail()
+    .then((user) => res.status(200).send(user))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).send({ message: "User not found" });
+      }
+      if (err.name === "CastError") {
+        return res.status(BAD_REQUEST).send({ message: "Invalid user ID" });
+      }
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server." });
+    });
+};
 
 module.exports = { getUsers, createUser, getUser };
