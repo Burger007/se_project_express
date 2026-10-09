@@ -1,7 +1,8 @@
-const User = require("../models/user");
 const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../utils/config");
 const bcrypt = require("bcryptjs");
+const User = require("../models/user");
+const { JWT_SECRET } = require("../utils/config");
+
 const {
   BAD_REQUEST,
   NOT_FOUND,
@@ -36,7 +37,7 @@ const createUser = (req, res) => {
     
     .catch((err) => {
       console.error(err);
-      if (err.code === "11000") {
+      if (err.code === 11000) {
         return res
         .status(CONFLICT)
         .send({ message: "A user with this email already exists" });
@@ -97,7 +98,7 @@ const getCurrentUser = (req, res) => {
     });
 };
 
-updateUser = (req, res) => {
+const updateUser = (req, res) => {
   const { name, avatar } = req.body;
 
   User.findByIdAndUpdate(
@@ -123,23 +124,5 @@ updateUser = (req, res) => {
 
 
 
-  const { userId } = req.params;
-
-  User.findById(userId)
-    .orFail()
-    .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "User not found" });
-      }
-      if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid user ID" });
-      }
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server." });
-    });
-};
-
-module.exports = { getUsers, createUser, getUser };
+ 
+module.exports = { getUsers, createUser, login, getCurrentUser, updateUser };
