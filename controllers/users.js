@@ -1,9 +1,13 @@
 const User = require("../models/user");
-
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../utils/config");
+const bcrypt = require("bcryptjs");
 const {
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
+  CONFLICT,
+  UNAUTHORIZED,
 } = require("../utils/errors");
 
 const getUsers = (req, res) => {
@@ -18,14 +22,24 @@ const getUsers = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatar, email, password } = req.body;
 
-  User.create({ name, avatar })
-    .then((user) => res.status(201).send(user))
+  bcrypt
+  .hash(password, 10)
+
+.then((hash) => User.create({ name, avatar, email, password: hash }))
+.then((user) => {
+  const userObj = user.toObject();
+  delete userObj.password;
+  res.status(201).send(userObj);
+})
+    
     .catch((err) => {
       console.error(err);
-      if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid data" });
+      if (err.code === "11000") {
+        return res
+        .status(CONFLICT)
+        .send({ message: "A user with this email already exists" });
       }
       return res
         .status(INTERNAL_SERVER_ERROR)
