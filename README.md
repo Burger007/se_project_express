@@ -17,5 +17,4 @@ What it does
 - If something goes wrong, the server sends back an error with the right status
   code (400 for bad data, 404 if something isn’t found, 500 for server errors)
 - Going to a route that doesn’t exist returns “Requested resource not found”
-- For now, every request uses a hardcoded test user. Real login comes in the next
-  sprint.
+
