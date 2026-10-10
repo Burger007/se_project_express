@@ -1,3 +1,4 @@
+const auth = require("../middlewares/auth");
 const router = require("express").Router();
 const {
   getItems,
@@ -6,6 +7,8 @@ const {
   likeItem,
   dislikeItem,
 } = require("../controllers/clothingitems");
+
+router.use(auth);
 
 router.get("/", getItems);
 router.post("/", createItem);
