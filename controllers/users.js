@@ -26,21 +26,21 @@ const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
   bcrypt
-  .hash(password, 10)
+    .hash(password, 10)
 
-.then((hash) => User.create({ name, avatar, email, password: hash }))
-.then((user) => {
-  const userObj = user.toObject();
-  delete userObj.password;
-  res.status(201).send(userObj);
-})
-    
+    .then((hash) => User.create({ name, avatar, email, password: hash }))
+    .then((user) => {
+      const userObj = user.toObject();
+      delete userObj.password;
+      res.status(201).send(userObj);
+    })
+
     .catch((err) => {
       console.error(err);
       if (err.code === 11000) {
         return res
-        .status(CONFLICT)
-        .send({ message: "A user with this email already exists" });
+          .status(CONFLICT)
+          .send({ message: "A user with this email already exists" });
       }
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({ message: "Invalid data" });
@@ -89,12 +89,12 @@ const getCurrentUser = (req, res) => {
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).send({ message: "User not found" });
       }
-      if (err.name === "DocumentNotFoundError"){
+      if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).send({ message: "User not found" });
       }
       return res
-      .status(INTERNAL_SERVER_ERROR)
-      .send({ message: "An error has occurred on the server." });
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
@@ -122,7 +122,4 @@ const updateUser = (req, res) => {
     });
 };
 
-
-
- 
 module.exports = { getUsers, createUser, login, getCurrentUser, updateUser };
