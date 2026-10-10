@@ -11,8 +11,6 @@ const {
   UNAUTHORIZED,
 } = require("../utils/errors");
 
-
-
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
@@ -80,7 +78,7 @@ const getCurrentUser = (req, res) => {
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).send({ message: "User not found" });
       }
-      
+
       return res
         .status(INTERNAL_SERVER_ERROR)
         .send({ message: "An error has occurred on the server." });
