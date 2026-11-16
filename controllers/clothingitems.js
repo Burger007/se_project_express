@@ -1,23 +1,20 @@
 const ClothingItem = require("../models/clothingitem");
-const {
-  BAD_REQUEST,
-  FORBIDDEN,
-  NOT_FOUND,
-  INTERNAL_SERVER_ERROR,
-} = require("../utils/errors");
 
-const handleError = (err, res) => {
-  console.error(err);
+const BadRequestError = require("../errors/BadRequestError");
+const ForbiddenError = require("../errors/ForbiddenError")
+const NotFoundError = require("../errors/NotFoundError");
+
+const handleError = (err, next) => {
   if (err.name === "ValidationError" || err.name === "CastError") {
-    return res.status(BAD_REQUEST).send({ message: "Invalid data" });
+    return next(new BadRequestError("Invalid data"));
   }
   if (err.name === "DocumentNotFoundError") {
-    return res.status(NOT_FOUND).send({ message: "Item not found" });
+    return next(new NotFoundError("Item not found"));
   }
-  return res
-    .status(INTERNAL_SERVER_ERROR)
-    .send({ message: "An error has occurred on the server." });
+  return next(err);
 };
+
+
 const getItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
