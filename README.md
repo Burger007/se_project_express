@@ -1,3 +1,13 @@
+# WTWR What to wear? — Back End
+## Deployed Project
+
+- Website: https://wtwr.coreytech.com
+- API: https://api.wtwr.coreytech.com
+
+## Front End
+
+The front end repository: https://github.com/Burger007/se_project_react
+
 This is the back end for my WTWR app. I built it with Node.js and Express,
 and the data (users and clothing items) is stored in MongoDB. I used Mongoose
 to set up the schemas and models, and the validator package to make sure the
